@@ -21,10 +21,13 @@ class ncursnek
 {
 public:
   ncursnek();
-  void getWindowSize(int &, int &, int &, int &);
+  void setUpCurses();
+  Direction setUpStartWindow();
   void setUpSnek(int, int, mapcontent [][26], deque<Coordinate> &);
+  void getWindowSize(int &, int &, int &, int &);
+  void initializeGameGrid();
   void refreshScreen(WINDOW *, mapcontent[][26]);
-  void gameLoop(WINDOW *, mapcontent[][26], deque<Coordinate> &);
+  void gameLoop(WINDOW *, mapcontent[][26], deque<Coordinate> &, Direction);
   bool moveSnek(Direction, mapcontent[][26], deque<Coordinate> &);
   bool collisionCheck(mapcontent[][26], Coordinate, deque<Coordinate> &);
   void eat(mapcontent[][26], Coordinate);
