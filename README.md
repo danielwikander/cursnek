@@ -1,4 +1,4 @@
-# ncursnek
+# ncursnek :snake:
 
 #### Installation:
 ```
