@@ -1,6 +1,7 @@
 #include "coordinate.h"
 #include "direction.h"
 #include "mapcontent.h"
+#include "hhscore.h"
 #include <iostream>
 #include <fstream>
 #include <istream>

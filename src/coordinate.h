@@ -1,6 +1,5 @@
 #ifndef COORDINATE
 #define COORDINATE
-
 struct Coordinate {
   int x, y;
   Coordinate(int x1, int y1) {
@@ -8,5 +7,4 @@ struct Coordinate {
     y = y1;
   };
 };
-
 #endif
