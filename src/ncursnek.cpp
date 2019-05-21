@@ -370,8 +370,7 @@ string ncursnek::getUserName(WINDOW *namewin)
 */
 void ncursnek::readHighScores(string username) 
 {
-  // Creates highscore file and opens streams
-  createHighScoreFile();
+  // Creates / Opens highscore file and opens streams
   ifstream hf_in("highscores.txt", ios::in);
   ofstream hf_out("highscores.txt", ios::app);
 
@@ -413,18 +412,6 @@ void ncursnek::readHighScores(string username)
   hf_in.close();
   hf_out.close();
   showHighScores(topscores);
-}
-
-/*
-  Creats a highscore file if none exists.
-*/
-void ncursnek::createHighScoreFile() 
-{
-  ofstream createFile;
-  string fileName = "../highscores.txt";
-  createFile.open(fileName, ios::app);
-  createFile << " ";
-  createFile.close();
 }
 
 /*
