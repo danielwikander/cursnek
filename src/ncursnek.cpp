@@ -13,7 +13,7 @@ int score = 0;
 mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE];
 
 /*
-  Initializes the game
+  Initializes the game.
 */
 ncursnek::ncursnek() 
 {
@@ -46,23 +46,23 @@ void ncursnek::setUpCurses()
   cbreak();             // Line buffering disabled
   keypad(stdscr, true); // Allows keyinputs
   noecho();             // Don't echo keyinputs
-  curs_set(0);
+  curs_set(0);          // Make cursor invisible
 }
 
 /*
-   Gets the size of the terminal window.
-   Can be used to create dynamically sized games.
-   Currently unused.
+  Gets the size of the terminal window.
+  Can be used to create dynamically sized games.
+  Currently unused.
 */ 
-void ncursnek::getWindowSize(int &beg_y, int &beg_x, 
-                             int &max_y, int &max_x) 
+void ncursnek::getTerminalSize(int &beg_y, int &beg_x, 
+                               int &max_y, int &max_x) 
 {
   getbegyx(stdscr, beg_y, beg_x);
   getmaxyx(stdscr, max_y, max_x);
 }
 
 /*
-   Initializes the gamegrid 
+  Initializes the gamegrid.
 */
 void ncursnek::initializeGameGrid() 
 {
@@ -75,7 +75,7 @@ void ncursnek::initializeGameGrid()
 }
 
 /* 
-   Displays a startup splashscreen, returns a starting direction.
+  Displays a startup splashscreen, returns a starting direction.
 */
 Direction ncursnek::setUpStartWindow() 
 {
@@ -95,12 +95,15 @@ Direction ncursnek::setUpStartWindow()
 	case 'a': case 'h':
       startdir = LEFT;
 	  break;
+
 	case 's': case 'j':
 	  startdir = DOWN;
 	  break;
+
 	case 'd': case 'l':
   	  startdir = RIGHT;
 	  break;
+
 	case 'w': case 'k':
       startdir = UP;
 	  break;
@@ -109,7 +112,7 @@ Direction ncursnek::setUpStartWindow()
 }
 
 /*
-   Places snek in the middle of the gamegrid.
+  Places snek in the middle of the gamegrid.
 */
 void ncursnek::setUpSnek(int startx, int starty,
                          mapcontent gamemap[][GAMEGRIDYSIZE],
@@ -120,7 +123,7 @@ void ncursnek::setUpSnek(int startx, int starty,
 }
 
 /*
-   Redraws the gamegrid.
+  Redraws the gamegrid.
 */
 void ncursnek::refreshScreen(WINDOW *win, 
                              mapcontent gamemap[][GAMEGRIDYSIZE]) 
@@ -144,8 +147,8 @@ void ncursnek::refreshScreen(WINDOW *win,
 }
 
 /*
-   The main gameloop, continuously checks user input, moves snek,
-   checks for collision and redraws the gamegrid. 
+  The main gameloop, continuously checks user input, moves snek,
+  checks for collision and redraws the gamegrid. 
 */
 void ncursnek::gameLoop(WINDOW *gamewin, 
                         mapcontent gamemap[][GAMEGRIDYSIZE],
@@ -193,7 +196,6 @@ void ncursnek::gameLoop(WINDOW *gamewin,
       else
         newDirection = currentDirection;
 		break;
-
     }
 	
 	// Tries to move snek. If it collides the loop breaks and the game is over.
@@ -214,7 +216,7 @@ void ncursnek::gameLoop(WINDOW *gamewin,
 }
 
 /*
-   Moves the snek. Returns false if the move was invalid (collision detected)
+  Moves the snek. Returns false if the move was invalid (collision detected).
 */
 bool ncursnek::moveSnek(Direction dir, 
                         mapcontent gamemap[][GAMEGRIDYSIZE],
@@ -251,12 +253,11 @@ bool ncursnek::moveSnek(Direction dir,
   return validMove;
 }
 
-
 /*
-   Checks for collisions. 
-   If snek collides with itself or the walls, returns true.
-   If snek collides with food, score++ and return false.
-   If there is no collision (nextStepContent == EMPTY) returns false.
+  Checks for collisions. 
+  If snek collides with itself or the walls, returns true.
+  If snek collides with food, score++ and return false.
+  If there is no collision (nextStepContent == EMPTY) returns false.
 */
 bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
                               Coordinate nextStep,
@@ -284,7 +285,7 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
 }
 
 /*
-   Snek eats the food, adds score and generates new food.
+  Snek eats the food, adds score and generates new food.
 */
 void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE], 
                    Coordinate foodToEat) 
@@ -295,7 +296,7 @@ void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE],
 }
 
 /*
-   Generate new food on the gamegrid.
+  Generate new food on the gamegrid.
 */
 void ncursnek::addFood(mapcontent gamemap[][GAMEGRIDYSIZE]) 
 {
@@ -308,9 +309,9 @@ void ncursnek::addFood(mapcontent gamemap[][GAMEGRIDYSIZE])
 }
 
 /*
-   Game over. Called when snek had a fatal collision.
-   Prompts the user to enter their name, and displays 
-   the Top 10 highscore list.
+  Game over. Called when snek had a fatal collision.
+  Prompts the user to enter their name, and displays 
+  the Top 10 highscore list.
 */
 void ncursnek::gameOver(WINDOW *win) 
 {
@@ -426,6 +427,7 @@ void ncursnek::showHighScores(vector<string> topscores)
   nodelay(scorewin, true);
   notimeout(scorewin, true);
   int scoresToShow = 10;
+
   if (topscores.size() < 10) 
     scoresToShow = topscores.size();
   
