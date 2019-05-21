@@ -1,16 +1,16 @@
 #include "ncursnek.h"
 
 // Window and gamegrid size variables
-const int sizex = 60;
-const int sizey = 30;
-const int gamegridxsize = sizex - 2;
-const int gamegridysize = sizey - 4;
+const int SIZEX = 60;
+const int SIZEY = 30;
+const int GAMEGRIDXSIZE = SIZEX - 2;
+const int GAMEGRIDYSIZE = SIZEY - 4;
 
 // The users score
 int score = 0;
 
 // The mapgrid
-mapcontent gamemap[gamegridxsize][gamegridysize];
+mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE];
 
 // Structure for storing and comparing highscores
 struct hhscore {
@@ -26,13 +26,13 @@ ncursnek::ncursnek() {
 
   // Create snek and place in the middle of the gamemap
   deque<Coordinate> snekCoordinates;
-  setUpSnek(sizex / 2 - 2, sizey / 2 - 2, gamemap, snekCoordinates);
+  setUpSnek(SIZEX / 2 - 2, SIZEY / 2 - 2, gamemap, snekCoordinates);
 
   // Present start window and get initial direction for snek
   Direction startdir = setUpStartWindow();
 
   // Create a window for the gamemap
-  WINDOW *gamewin = newwin(sizey - 2, sizex, 1, 2);
+  WINDOW *gamewin = newwin(SIZEY - 2, SIZEX, 1, 2);
   nodelay(gamewin, true);
   notimeout(gamewin, true);
   box(gamewin, 0, 0);
@@ -61,8 +61,8 @@ void ncursnek::getWindowSize(int &beg_y, int &beg_x, int &max_y, int &max_x) {
 // Initializes the gamegrid 
 void ncursnek::initializeGameGrid() {
   int row, col;
-  for (row = 0; row < gamegridxsize; row++) {
-    for (col = 0; col < gamegridysize; col++) {
+  for (row = 0; row < GAMEGRIDXSIZE; row++) {
+    for (col = 0; col < GAMEGRIDYSIZE; col++) {
       gamemap[row][col] = EMPTY;
     }
   }
@@ -70,7 +70,7 @@ void ncursnek::initializeGameGrid() {
 
 // Displays a startup splashscreen, returns a starting direction.
 Direction ncursnek::setUpStartWindow() {
-  WINDOW *startwin = newwin(sizey - 2, sizex, 1, 2);
+  WINDOW *startwin = newwin(SIZEY - 2, SIZEX, 1, 2);
   notimeout(startwin, true);
   mvwprintw(startwin, 10, 18, "NCURSNEK");
   mvwprintw(startwin, 12, 18, "Move with wasd / hjkl.");
@@ -100,16 +100,16 @@ Direction ncursnek::setUpStartWindow() {
 }
 
 void ncursnek::setUpSnek(int startx, int starty,
-                         mapcontent gamemap[][gamegridysize],
+                         mapcontent gamemap[][GAMEGRIDYSIZE],
                          deque<Coordinate> &snekCoordinates) {
   gamemap[startx][starty] = SNEK;
   snekCoordinates.push_front(Coordinate(startx, starty));
 }
 
-void ncursnek::refreshScreen(WINDOW *win, mapcontent gamemap[][gamegridysize]) {
+void ncursnek::refreshScreen(WINDOW *win, mapcontent gamemap[][GAMEGRIDYSIZE]) {
   box(win, 0, 0);
-  for (int row = 0; row < gamegridysize; row++) {
-    for (int col = 0; col < gamegridxsize; col++) {
+  for (int row = 0; row < GAMEGRIDYSIZE; row++) {
+    for (int col = 0; col < GAMEGRIDXSIZE; col++) {
       mapcontent coordinateContent = gamemap[col][row];
       if (coordinateContent == EMPTY) {
         mvwprintw(win, row + 1, col + 1, " ");
@@ -125,7 +125,7 @@ void ncursnek::refreshScreen(WINDOW *win, mapcontent gamemap[][gamegridysize]) {
   wrefresh(win);
 }
 
-void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][gamegridysize],
+void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][GAMEGRIDYSIZE],
                         deque<Coordinate> &snekCoordinates, Direction startdir) {
   Direction currentDirection = startdir;
   Direction newDirection = startdir;
@@ -140,34 +140,41 @@ void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][gamegridysize],
     switch (c) {
     case 'q':
       return;
+
     case 'h': case 'a': // Navigate left
       if (currentDirection != RIGHT)
         newDirection = LEFT;
       else
         newDirection = currentDirection;
-      break;
+		break;
+
     case 'j': case 's': // Navigate down
       if (currentDirection != UP)
         newDirection = DOWN;
       else
         newDirection = currentDirection;
-      break;
+		break;
+
     case 'k': case 'w': // Navigate up
       if (currentDirection != DOWN)
         newDirection = UP;
       else
         newDirection = currentDirection;
-      break;
+		break;
+
     case 'l': case 'd': // Navigate right
       if (currentDirection != LEFT)
         newDirection = RIGHT;
       else
         newDirection = currentDirection;
-      break;
+		break;
+
     }
-    if (!moveSnek(newDirection, gamemap, snekCoordinates)) {
+	
+	// Tries to move snek. If it collides the loop breaks and the game is over.
+    if (!moveSnek(newDirection, gamemap, snekCoordinates)) 
       break;
-    }
+   
     // Checks the speed of the step and waits if necessary
     // auto end_time = std::chrono::high_resolution_clock::now();
     // auto time = end_time - start_time;
@@ -181,21 +188,28 @@ void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][gamegridysize],
   gameOver(gamewin);
 }
 
-bool ncursnek::moveSnek(Direction dir, mapcontent gamemap[][gamegridysize],
+bool ncursnek::moveSnek(Direction dir, mapcontent gamemap[][GAMEGRIDYSIZE],
                         deque<Coordinate> &snekCoordinates) {
   bool validMove = false;
   Coordinate currentHead = snekCoordinates.front();
-  //  Coordinate currentTail = snekCoordinates.back();
   Coordinate newhead(0, 0);
 
-  if (dir == UP) {
-    newhead = Coordinate(currentHead.x, currentHead.y - 1);
-  } else if (dir == DOWN) {
-    newhead = Coordinate(currentHead.x, currentHead.y + 1);
-  } else if (dir == LEFT) {
-    newhead = Coordinate(currentHead.x - 1, currentHead.y);
-  } else if (dir == RIGHT) {
-    newhead = Coordinate(currentHead.x + 1, currentHead.y);
+  switch (dir) {
+	  case UP: 
+		newhead = Coordinate(currentHead.x, currentHead.y -1);
+		break;
+
+	  case DOWN:
+		newhead = Coordinate(currentHead.x, currentHead.y +1);
+		break;
+
+	  case LEFT: 
+		newhead = Coordinate(currentHead.x -1, currentHead.y);
+		break;
+
+	  case RIGHT:
+		newhead = Coordinate(currentHead.x +1, currentHead.y);
+		break;
   }
 
   // Checks for food and fatal collisions
@@ -207,18 +221,18 @@ bool ncursnek::moveSnek(Direction dir, mapcontent gamemap[][gamegridysize],
   return validMove;
 }
 
-bool ncursnek::collisionCheck(mapcontent gamemap[][gamegridysize],
+bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
                               Coordinate nextStep,
                               deque<Coordinate> &snekCoordinates) {
   bool fatalCollision = false;
   mapcontent nextStepContent = gamemap[nextStep.x][nextStep.y];
 
-  if (nextStep.x < 0 || nextStep.y < 0 || nextStep.x >= gamegridxsize ||
-      nextStep.y >= gamegridysize) { // Out of bounds
+  if (nextStep.x < 0 || nextStep.y < 0 || nextStep.x >= GAMEGRIDXSIZE ||
+      nextStep.y >= GAMEGRIDYSIZE) {     // Out of bounds
     fatalCollision = true;
-  } else if (nextStepContent == SNEK) { // Self collision
+  } else if (nextStepContent == SNEK) {  // Self collision
     fatalCollision = true;
-  } else if (nextStepContent == FOOD) { // Eat, score++
+  } else if (nextStepContent == FOOD) {  // Eat, score++
     eat(gamemap, nextStep);
     fatalCollision = false;
   } else if (nextStepContent == EMPTY) { // No collision, keep moving
@@ -231,17 +245,17 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][gamegridysize],
   return fatalCollision;
 }
 
-void ncursnek::eat(mapcontent gamemap[][gamegridysize], Coordinate foodToEat) {
+void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE], Coordinate foodToEat) {
   gamemap[foodToEat.x][foodToEat.y] = EMPTY;
   score += 100;
   addFood(gamemap);
 }
 
-void ncursnek::addFood(mapcontent gamemap[][gamegridysize]) {
+void ncursnek::addFood(mapcontent gamemap[][GAMEGRIDYSIZE]) {
   int randRow, randCol;
   do {
-    randRow = rand() % gamegridxsize;
-    randCol = rand() % gamegridysize;
+    randRow = rand() % GAMEGRIDXSIZE;
+    randCol = rand() % GAMEGRIDYSIZE;
   } while (gamemap[randRow][randCol] != EMPTY);
   gamemap[randRow][randCol] = FOOD;
 }
@@ -343,12 +357,12 @@ void ncursnek::showHighScores(vector<string> topscores) {
   nodelay(scorewin, true);
   notimeout(scorewin, true);
   int scoresToShow = 10;
-  if (topscores.size() < 10) {
+  if (topscores.size() < 10) 
     scoresToShow = topscores.size();
-  }
-  for (int i = 0; i < scoresToShow; i++) {
+  
+  for (int i = 0; i < scoresToShow; i++) 
     mvwprintw(scorewin, i + 1, 1, topscores.at(i).c_str());
-  }
+  
   box(scorewin, 0, 0);
   mvwprintw(scorewin, 0, 1, "TOP 10:");
   mvwprintw(scorewin, 11, 20, "Press q to exit");
