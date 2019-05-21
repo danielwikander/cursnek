@@ -340,14 +340,23 @@ string ncursnek::getUserName(WINDOW *namewin)
   string input;
   nodelay(namewin, false);
   cbreak();
-  echo();
+  noecho();
   curs_set(1);
+  int i = 1;
   char ch = wgetch(namewin);
   while (ch != '\n') {
-    if (ch == '\b') {
-      input.pop_back();
+    if (ch == '\b' || ch == 127) {
+      if (!input.empty()) {
+		input.pop_back();
+	    mvwprintw(namewin, 1, i - 1, " ");
+	    wmove(namewin, 1, i - 1);
+        i--;
+	  }
+    } else {
+      mvwaddch(namewin, 1, i, ch);
+	  i++;
+      input.push_back(ch);
     }
-    input.push_back(ch);
     ch = wgetch(namewin);
     wrefresh(namewin);
   }
