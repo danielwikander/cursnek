@@ -54,7 +54,8 @@ void ncursnek::setUpCurses()
    Can be used to create dynamically sized games.
    Currently unused.
 */ 
-void ncursnek::getWindowSize(int &beg_y, int &beg_x, int &max_y, int &max_x) 
+void ncursnek::getWindowSize(int &beg_y, int &beg_x, 
+							 int &max_y, int &max_x) 
 {
   getbegyx(stdscr, beg_y, beg_x);
   getmaxyx(stdscr, max_y, max_x);
@@ -80,7 +81,7 @@ Direction ncursnek::setUpStartWindow()
 {
   WINDOW *startwin = newwin(SIZEY - 2, SIZEX, 1, 2);
   notimeout(startwin, true);
-  mvwprintw(startwin, 10, 18, "NCURSNEK");
+  mvwprintw(startwin, 10, 18, "ncursnek");
   mvwprintw(startwin, 12, 18, "Move with wasd / hjkl.");
   mvwprintw(startwin, 13, 18, "Exit with q.");
   mvwprintw(startwin, 15, 18, "Press any key to start.");
@@ -121,7 +122,8 @@ void ncursnek::setUpSnek(int startx, int starty,
 /*
    Redraws the gamegrid.
 */
-void ncursnek::refreshScreen(WINDOW *win, mapcontent gamemap[][GAMEGRIDYSIZE]) 
+void ncursnek::refreshScreen(WINDOW *win, 
+							 mapcontent gamemap[][GAMEGRIDYSIZE]) 
 {
   box(win, 0, 0);
   for (int row = 0; row < GAMEGRIDYSIZE; row++) {
@@ -145,8 +147,10 @@ void ncursnek::refreshScreen(WINDOW *win, mapcontent gamemap[][GAMEGRIDYSIZE])
    The main gameloop, continuously checks user input, moves snek,
    checks for collision and redraws the gamegrid. 
 */
-void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][GAMEGRIDYSIZE],
-                        deque<Coordinate> &snekCoordinates, Direction startdir) 
+void ncursnek::gameLoop(WINDOW *gamewin, 
+						mapcontent gamemap[][GAMEGRIDYSIZE],
+                        deque<Coordinate> &snekCoordinates, 
+						Direction startdir) 
 {
   Direction currentDirection = startdir;
   Direction newDirection = startdir;
@@ -212,7 +216,8 @@ void ncursnek::gameLoop(WINDOW *gamewin, mapcontent gamemap[][GAMEGRIDYSIZE],
 /*
    Moves the snek. Returns false if the move was invalid (collision detected)
 */
-bool ncursnek::moveSnek(Direction dir, mapcontent gamemap[][GAMEGRIDYSIZE],
+bool ncursnek::moveSnek(Direction dir, 
+						mapcontent gamemap[][GAMEGRIDYSIZE],
                         deque<Coordinate> &snekCoordinates) 
 {
   bool validMove = false;
@@ -281,7 +286,8 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
 /*
    Snek eats the food, adds score and generates new food.
 */
-void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE], Coordinate foodToEat) 
+void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE], 
+				   Coordinate foodToEat) 
 {
   gamemap[foodToEat.x][foodToEat.y] = EMPTY;
   score += 100;
