@@ -55,7 +55,7 @@ void ncursnek::setUpCurses()
    Currently unused.
 */ 
 void ncursnek::getWindowSize(int &beg_y, int &beg_x, 
-							 int &max_y, int &max_x) 
+                             int &max_y, int &max_x) 
 {
   getbegyx(stdscr, beg_y, beg_x);
   getmaxyx(stdscr, max_y, max_x);
@@ -123,7 +123,7 @@ void ncursnek::setUpSnek(int startx, int starty,
    Redraws the gamegrid.
 */
 void ncursnek::refreshScreen(WINDOW *win, 
-							 mapcontent gamemap[][GAMEGRIDYSIZE]) 
+                             mapcontent gamemap[][GAMEGRIDYSIZE]) 
 {
   box(win, 0, 0);
   for (int row = 0; row < GAMEGRIDYSIZE; row++) {
@@ -148,9 +148,9 @@ void ncursnek::refreshScreen(WINDOW *win,
    checks for collision and redraws the gamegrid. 
 */
 void ncursnek::gameLoop(WINDOW *gamewin, 
-						mapcontent gamemap[][GAMEGRIDYSIZE],
+                        mapcontent gamemap[][GAMEGRIDYSIZE],
                         deque<Coordinate> &snekCoordinates, 
-						Direction startdir) 
+                        Direction startdir) 
 {
   Direction currentDirection = startdir;
   Direction newDirection = startdir;
@@ -217,7 +217,7 @@ void ncursnek::gameLoop(WINDOW *gamewin,
    Moves the snek. Returns false if the move was invalid (collision detected)
 */
 bool ncursnek::moveSnek(Direction dir, 
-						mapcontent gamemap[][GAMEGRIDYSIZE],
+                        mapcontent gamemap[][GAMEGRIDYSIZE],
                         deque<Coordinate> &snekCoordinates) 
 {
   bool validMove = false;
@@ -287,7 +287,7 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
    Snek eats the food, adds score and generates new food.
 */
 void ncursnek::eat(mapcontent gamemap[][GAMEGRIDYSIZE], 
-				   Coordinate foodToEat) 
+                   Coordinate foodToEat) 
 {
   gamemap[foodToEat.x][foodToEat.y] = EMPTY;
   score += 100;
