@@ -1,16 +1,16 @@
 #include "ncursnek.h"
 
 // Window and gamegrid size variables
-const int SIZEX = 60;
-const int SIZEY = 30;
-const int GAMEGRIDXSIZE = SIZEX - 2;
-const int GAMEGRIDYSIZE = SIZEY - 4;
+const int WINDOWSIZEX = 60;
+const int WINDOWSIZEY = 30;
+const int GAMEGRIDXSIZE = WINDOWSIZEX - 2;
+const int GAMEGRIDYSIZE = WINDOWSIZEY - 4;
 
-// The users score
-int score = 0;
+const int SNEKSPEED = 100; // ms between snek movements
 
-// The mapgrid
-mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE];
+int score = 0; // Users score
+
+mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE]; // Map grid
 
 /*
   Initializes the game.
@@ -22,13 +22,13 @@ ncursnek::ncursnek()
 
   // Create snek and place in the middle of the gamemap
   deque<Coordinate> snekCoordinates;
-  setUpSnek(SIZEX / 2 - 2, SIZEY / 2 - 2, gamemap, snekCoordinates);
+  setUpSnek(WINDOWSIZEX / 2 - 2, WINDOWSIZEY / 2 - 2, gamemap, snekCoordinates);
 
   // Present start window and get initial direction for snek
   Direction startdir = setUpStartWindow();
 
   // Create a window for the gamemap
-  WINDOW *gamewin = newwin(SIZEY - 2, SIZEX, 1, 2);
+  WINDOW *gamewin = newwin(WINDOWSIZEY - 2, WINDOWSIZEX, 1, 2);
   nodelay(gamewin, true);
   notimeout(gamewin, true);
   box(gamewin, 0, 0);
@@ -79,7 +79,7 @@ void ncursnek::initializeGameGrid()
 */
 Direction ncursnek::setUpStartWindow() 
 {
-  WINDOW *startwin = newwin(SIZEY - 2, SIZEX, 1, 2);
+  WINDOW *startwin = newwin(WINDOWSIZEY - 2, WINDOWSIZEX, 1, 2);
   notimeout(startwin, true);
   mvwprintw(startwin, 10, 18, "ncursnek");
   mvwprintw(startwin, 12, 18, "Move with wasd / hjkl.");
@@ -131,6 +131,7 @@ void ncursnek::refreshScreen(WINDOW *win,
   box(win, 0, 0);
   for (int row = 0; row < GAMEGRIDYSIZE; row++) {
     for (int col = 0; col < GAMEGRIDXSIZE; col++) {
+
       mapcontent coordinateContent = gamemap[col][row];
       if (coordinateContent == EMPTY) {
         mvwprintw(win, row + 1, col + 1, " ");
@@ -161,10 +162,9 @@ void ncursnek::gameLoop(WINDOW *gamewin,
   addFood(gamemap);
 
   while (true) {
-    // TODO: Incorporate timer function for consistent performance?
-    // auto start_time = chrono::high_resolution_clock::now();
+    // Start looptimer
+    auto start_time = chrono::high_resolution_clock::now();
     char c = wgetch(gamewin);
-    this_thread::sleep_for(chrono::milliseconds(100));
     switch (c) {
     case 'q':
       return;
@@ -198,19 +198,19 @@ void ncursnek::gameLoop(WINDOW *gamewin,
 		break;
     }
 	
-	// Tries to move snek. If it collides the loop breaks and the game is over.
+    // Tries to move snek. If it collides the loop breaks and the game is over.
     if (!moveSnek(newDirection, gamemap, snekCoordinates)) 
       break;
-   
-    // Checks the speed of the step and waits if necessary
-    // auto end_time = std::chrono::high_resolution_clock::now();
-    // auto time = end_time - start_time;
-    // auto timems = time/std::chrono::milliseconds(1);
-    // if (timems < 150) {
-    //	this_thread::sleep_for(chrono::milliseconds(150 - timems));
-    //}
+
     currentDirection = newDirection;
     refreshScreen(gamewin, gamemap);
+
+	// Waits the appropriate amount of time until next loop
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto time = end_time - start_time;
+    auto timems = time / std::chrono::milliseconds(1);
+    if (timems < SNEKSPEED)
+      this_thread::sleep_for(chrono::milliseconds(SNEKSPEED - timems));
   }
   gameOver(gamewin);
 }
