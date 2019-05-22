@@ -182,8 +182,8 @@ void ncursnek::gameLoop(WINDOW *gamewin,
     case 'q':
       return;
 
-	case ' ':
-	  pauseScreen();
+    case ' ':
+      pauseScreen();
       break;
 
     case 'h': case 'a': // Navigate left
@@ -191,28 +191,29 @@ void ncursnek::gameLoop(WINDOW *gamewin,
         newDirection = LEFT;
       else
         newDirection = currentDirection;
-        break;
+      break;
 
-    case 'j': case 's': // Navigate down
+    case 'j':
+    case 's': // Navigate down
       if (currentDirection != UP)
         newDirection = DOWN;
       else
         newDirection = currentDirection;
-        break;
+      break;
 
     case 'k': case 'w': // Navigate up
       if (currentDirection != DOWN)
         newDirection = UP;
       else
         newDirection = currentDirection;
-        break;
+      break;
 
     case 'l': case 'd': // Navigate right
       if (currentDirection != LEFT)
         newDirection = RIGHT;
       else
         newDirection = currentDirection;
-        break;
+      break;
     }
 	
     // Tries to move snek. If it collides the loop breaks and the game is over.
@@ -488,10 +489,9 @@ int main()
 {
   bool playAgain;
   do {
-	  ncursnek spp;
-	  playAgain = showPlayAgainWindow();
-	  endwin(); // Ends curses
+    ncursnek spp;
+    playAgain = showPlayAgainWindow();
+    endwin(); // Ends curses
   } while (playAgain == true); 
-
   return 0;
 }
