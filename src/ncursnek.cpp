@@ -294,8 +294,8 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
     fatalCollision = false;
   } else if (nextStepContent == EMPTY) { // No collision, keep moving
     fatalCollision = false;
-    Coordinate tail =
-        Coordinate(snekCoordinates.back().x, snekCoordinates.back().y);
+    Coordinate tail = Coordinate(snekCoordinates.back().x, 
+                                 snekCoordinates.back().y);
     gamemap[tail.x][tail.y] = EMPTY;
     snekCoordinates.pop_back();
   }
