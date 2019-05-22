@@ -2,7 +2,7 @@
 
 // Window and gamegrid size variables
 const int WINDOWSIZEX = 60;
-const int WINDOWSIZEY = 30;
+const int WINDOWSIZEY = 24;
 const int GAMEGRIDXSIZE = WINDOWSIZEX - 2;
 const int GAMEGRIDYSIZE = WINDOWSIZEY - 4;
 
@@ -81,10 +81,11 @@ Direction ncursnek::setUpStartWindow()
 {
   WINDOW *startwin = newwin(WINDOWSIZEY - 2, WINDOWSIZEX, 1, 2);
   notimeout(startwin, true);
-  mvwprintw(startwin, 10, 18, "ncursnek");
-  mvwprintw(startwin, 12, 18, "Move with wasd / hjkl.");
-  mvwprintw(startwin, 13, 18, "Exit with q.");
-  mvwprintw(startwin, 15, 18, "Press any key to start.");
+  mvwprintw(startwin, 7, 18, "ncursnek");
+  mvwprintw(startwin, 9, 18, "Move with wasd / hjkl.");
+  mvwprintw(startwin, 10, 18, "Pause with space.");
+  mvwprintw(startwin, 11, 18, "Exit with q.");
+  mvwprintw(startwin, 13, 18, "Press any key to start.");
   box(startwin, 0, 0);
   wrefresh(startwin);
 
@@ -109,6 +110,16 @@ Direction ncursnek::setUpStartWindow()
 	  break;
   }
   return startdir;
+}
+
+void ncursnek::pauseScreen() {
+  WINDOW *pausewin = newwin(5, 14, 9, 24);
+  notimeout(pausewin, true);
+  mvwprintw(pausewin,2,4, "PAUSED");
+  box(pausewin, 0, 0);
+  wrefresh(pausewin);
+
+  wgetch(pausewin);
 }
 
 /*
@@ -168,6 +179,10 @@ void ncursnek::gameLoop(WINDOW *gamewin,
     switch (c) {
     case 'q':
       return;
+
+	case ' ':
+	  pauseScreen();
+	  break;
 
     case 'h': case 'a': // Navigate left
       if (currentDirection != RIGHT)
@@ -317,10 +332,10 @@ void ncursnek::gameOver(WINDOW *win)
 {
   string scorestring = "FINAL SCORE: ";
   scorestring.append(to_string(score));
-  mvwprintw(win, 10, 15, scorestring.c_str());
+  mvwprintw(win, 8, 16, scorestring.c_str());
   wrefresh(win);
 
-  WINDOW *namewin = newwin(3, 25, 13, 16);
+  WINDOW *namewin = newwin(3, 25, 11, 17);
   nodelay(namewin, true);
   notimeout(namewin, true);
   box(namewin, 0, 0);
@@ -419,7 +434,7 @@ void ncursnek::readHighScores(string username)
 */
 void ncursnek::showHighScores(vector<string> topscores) 
 {
-  WINDOW *scorewin = newwin(12, 36, 8, 15);
+  WINDOW *scorewin = newwin(12, 36, 6, 15);
   nodelay(scorewin, true);
   notimeout(scorewin, true);
   int scoresToShow = 10;
