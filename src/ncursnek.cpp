@@ -1,7 +1,7 @@
 #include "ncursnek.h"
 
 // Window and gamegrid size variables
-const int WINDOWSIZEX = 60;
+const int WINDOWSIZEX = 56;
 const int WINDOWSIZEY = 24;
 const int GAMEGRIDXSIZE = WINDOWSIZEX - 2;
 const int GAMEGRIDYSIZE = WINDOWSIZEY - 4;
@@ -32,6 +32,9 @@ ncursnek::ncursnek()
   nodelay(gamewin, true);
   notimeout(gamewin, true);
   box(gamewin, 0, 0);
+
+  // Show highscore sidebar
+  showSidebarHighScores();
 
   // Start the gameloop
   gameLoop(gamewin, gamemap, snekCoordinates, startdir);
@@ -344,7 +347,7 @@ void ncursnek::gameOver(WINDOW *win)
   wrefresh(namewin);
   string username = getUserName(namewin);
 
-  readHighScores(username);
+  writeScore(username);
 }
 
 /*
@@ -380,13 +383,12 @@ string ncursnek::getUserName(WINDOW *namewin)
   return input;
 }
 
+
 /*
-  Reads the highscores from the highscore file.
-*/
-void ncursnek::readHighScores(string username) 
+   Writes current users score to file
+ */
+void ncursnek::writeScore(string username) 
 {
-  // Creates / Opens highscore file and opens streams
-  ifstream hf_in("highscores.txt", ios::in);
   ofstream hf_out("highscores.txt", ios::app);
 
   // Adds current users score to file
@@ -396,6 +398,16 @@ void ncursnek::readHighScores(string username)
     hscore.append(username);
     hf_out << hscore << endl;
   }
+}
+
+
+/*
+  Reads the highscores from the highscore file.
+*/
+vector<string> ncursnek::readHighScores() 
+{
+  // Creates / Opens highscore file and opens stream
+  ifstream hf_in("highscores.txt", ios::in);
 
   // Reads file and sorts scores
   vector<string> topscores;
@@ -425,45 +437,62 @@ void ncursnek::readHighScores(string username)
     }
   }
   hf_in.close();
-  hf_out.close();
-  showHighScores(topscores);
+  return topscores;
 }
 
 /*
-  Displays the top 10 highscores from the highscore file.
-*/
-void ncursnek::showHighScores(vector<string> topscores) 
+   Displays the top 10 highscores on a sidebar.
+ */
+void ncursnek::showSidebarHighScores() 
 {
-  WINDOW *scorewin = newwin(12, 36, 6, 15);
-  nodelay(scorewin, true);
-  notimeout(scorewin, true);
-  int scoresToShow = 10;
+  vector<string> topscores = readHighScores();
 
+  WINDOW *sidebarhswin = newwin(12, 20, 1, 58);
+  int scoresToShow = 10;
   if (topscores.size() < 10) 
     scoresToShow = topscores.size();
   
   for (int i = 0; i < scoresToShow; i++) 
-    mvwprintw(scorewin, i + 1, 1, topscores.at(i).c_str());
+    mvwprintw(sidebarhswin, i + 1, 1, topscores.at(i).c_str());
   
-  box(scorewin, 0, 0);
-  mvwprintw(scorewin, 0, 1, "TOP 10:");
-  mvwprintw(scorewin, 11, 20, "Press q to exit");
+  box(sidebarhswin, 0, 0);
+  mvwprintw(sidebarhswin, 0, 1, "TOP 10:");
   curs_set(0);
-  wrefresh(scorewin);
-  // wait for user to exit
+  wrefresh(sidebarhswin);
+}
+
+/*
+   Displays a 'game over' window that prompts the user
+   to quit or start a new game.
+ */
+bool showPlayAgainWindow()
+{
+  WINDOW *gameoverwin = newwin(8, 30, 7, 16);
   timeout(-1);
-  while (char c = wgetch(scorewin)) {
-    if (c == 'q') {
-      return;
-    } else {
-      this_thread::sleep_for(chrono::milliseconds(200));
-    }
-  }
+  curs_set(0);
+  mvwprintw(gameoverwin,2,4, "GAME OVER");
+  mvwprintw(gameoverwin,4,4, "r to restart");
+  mvwprintw(gameoverwin,5,4, "any other key to exit");
+
+  box(gameoverwin, 0, 0);
+  wrefresh(gameoverwin);
+
+  bool playAgain = false;
+  char c = wgetch(gameoverwin);
+  if(c == 'r') 
+	  playAgain = true;
+
+  return playAgain;
 }
 
 int main() 
 {
-  ncursnek spp;
-  endwin(); // Deallocates memory and ends curses
+  bool playAgain;
+  do {
+	  ncursnek spp;
+	  playAgain = showPlayAgainWindow();
+	  endwin(); // Ends curses
+  } while (playAgain == true); 
+
   return 0;
 }

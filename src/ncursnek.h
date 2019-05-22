@@ -35,9 +35,11 @@ public:
   void addFood(mapcontent[][20]);
   string getUserName(WINDOW *);
   void pauseScreen();
-  void createHighScoreFile();
+  void writeScore(string);
+  void showSidebarHighScores();
   void showHighScores(vector<string>);
-  void readHighScores(string);
+  void showGameOverWindow();
+  vector<string> readHighScores();
   void gameOver(WINDOW *);
 };
 
