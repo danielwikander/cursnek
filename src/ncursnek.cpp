@@ -12,6 +12,10 @@ int score = 0; // Users score
 
 mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE]; // Map grid
 
+// TODO: Separate highscore code,
+//	     Make snek blink on death
+//		 
+
 /*
   Initializes the game.
 */
@@ -84,11 +88,11 @@ Direction ncursnek::setUpStartWindow()
 {
   WINDOW *startwin = newwin(WINDOWSIZEY - 2, WINDOWSIZEX, 1, 2);
   notimeout(startwin, true);
-  mvwprintw(startwin, 7, 18, "ncursnek");
-  mvwprintw(startwin, 9, 18, "Move with wasd / hjkl.");
-  mvwprintw(startwin, 10, 18, "Pause with space.");
-  mvwprintw(startwin, 11, 18, "Exit with q.");
-  mvwprintw(startwin, 13, 18, "Press any key to start.");
+  mvwprintw(startwin, 7, 17, "ncursnek");
+  mvwprintw(startwin, 9, 17, "Move with wasd / hjkl.");
+  mvwprintw(startwin, 10, 17, "Pause with space.");
+  mvwprintw(startwin, 11, 17, "Exit with q.");
+  mvwprintw(startwin, 13, 17, "Press any key to start.");
   box(startwin, 0, 0);
   wrefresh(startwin);
 
@@ -462,7 +466,7 @@ void ncursnek::showSidebarHighScores()
 }
 
 /*
-   Displays a 'game over' window that prompts the user
+   Displays a 'play again?' window that prompts the user
    to quit or start a new game.
  */
 bool showPlayAgainWindow()

@@ -4,7 +4,7 @@ Snake in your terminal!
 
 ncursnek is written in C++ using the ncurses library.
 
-![ncursnek](/screenshots/ncursnek.gif?raw=true "ncursnek")<Paste>
+![ncursnek](/screenshots/ncursnek2.gif?raw=true "ncursnek")<Paste>
 
 #### Installation:
 ```
