@@ -1,20 +1,15 @@
 #include "ncursnek.h"
 
-// Window and gamegrid size variables
 const int WINDOWSIZEX = 56;
 const int WINDOWSIZEY = 24;
 const int GAMEGRIDXSIZE = WINDOWSIZEX - 2;
 const int GAMEGRIDYSIZE = WINDOWSIZEY - 4;
-
 const int SNEKSPEED = 100; // ms between snek movements
-
-int score = 0; // Users score
-
-mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE]; // Map grid
+int score = 0;             // Users score
+mapcontent gamemap[GAMEGRIDXSIZE][GAMEGRIDYSIZE]; 
 
 // TODO: Separate highscore code,
-//	     Make snek blink on death
-//		 
+//       Make snek blink on death
 
 /*
   Initializes the game.
@@ -100,21 +95,21 @@ Direction ncursnek::setUpStartWindow()
   Direction startdir = UP;
   char c = wgetch(startwin);
   switch (c) {
-	case 'a': case 'h':
+    case 'a': case 'h':
       startdir = LEFT;
-	  break;
+      break;
 
-	case 's': case 'j':
-	  startdir = DOWN;
-	  break;
+    case 's': case 'j':
+      startdir = DOWN;
+      break;
 
-	case 'd': case 'l':
-  	  startdir = RIGHT;
-	  break;
+    case 'd': case 'l':
+      startdir = RIGHT;
+      break;
 
-	case 'w': case 'k':
+    case 'w': case 'k':
       startdir = UP;
-	  break;
+      break;
   }
   return startdir;
 }
@@ -189,35 +184,35 @@ void ncursnek::gameLoop(WINDOW *gamewin,
 
 	case ' ':
 	  pauseScreen();
-	  break;
+      break;
 
     case 'h': case 'a': // Navigate left
       if (currentDirection != RIGHT)
         newDirection = LEFT;
       else
         newDirection = currentDirection;
-		break;
+        break;
 
     case 'j': case 's': // Navigate down
       if (currentDirection != UP)
         newDirection = DOWN;
       else
         newDirection = currentDirection;
-		break;
+        break;
 
     case 'k': case 'w': // Navigate up
       if (currentDirection != DOWN)
         newDirection = UP;
       else
         newDirection = currentDirection;
-		break;
+        break;
 
     case 'l': case 'd': // Navigate right
       if (currentDirection != LEFT)
         newDirection = RIGHT;
       else
         newDirection = currentDirection;
-		break;
+        break;
     }
 	
     // Tries to move snek. If it collides the loop breaks and the game is over.
@@ -227,7 +222,7 @@ void ncursnek::gameLoop(WINDOW *gamewin,
     currentDirection = newDirection;
     refreshScreen(gamewin, gamemap);
 
-	// Waits the appropriate amount of time until next loop
+    // Waits the appropriate amount of time until next loop
     auto end_time = std::chrono::high_resolution_clock::now();
     auto time = end_time - start_time;
     auto timems = time / std::chrono::milliseconds(1);
@@ -249,21 +244,21 @@ bool ncursnek::moveSnek(Direction dir,
   Coordinate newhead(0, 0);
 
   switch (dir) {
-	  case UP: 
-		newhead = Coordinate(currentHead.x, currentHead.y -1);
-		break;
+    case UP: 
+      newhead = Coordinate(currentHead.x, currentHead.y -1);
+      break;
 
-	  case DOWN:
-		newhead = Coordinate(currentHead.x, currentHead.y +1);
-		break;
+    case DOWN:
+      newhead = Coordinate(currentHead.x, currentHead.y +1);
+      break;
 
-	  case LEFT: 
-		newhead = Coordinate(currentHead.x -1, currentHead.y);
-		break;
+    case LEFT: 
+      newhead = Coordinate(currentHead.x -1, currentHead.y);
+      break;
 
-	  case RIGHT:
-		newhead = Coordinate(currentHead.x +1, currentHead.y);
-		break;
+    case RIGHT:
+      newhead = Coordinate(currentHead.x +1, currentHead.y);
+      break;
   }
 
   // Checks for food and fatal collisions
@@ -288,8 +283,8 @@ bool ncursnek::collisionCheck(mapcontent gamemap[][GAMEGRIDYSIZE],
   bool fatalCollision = false;
   mapcontent nextStepContent = gamemap[nextStep.x][nextStep.y];
 
-  if (nextStep.x < 0 || nextStep.y < 0 || nextStep.x >= GAMEGRIDXSIZE ||
-      nextStep.y >= GAMEGRIDYSIZE) {     // Out of bounds
+  if (nextStep.x < 0 || nextStep.y < 0 ||  
+      nextStep.x >= GAMEGRIDXSIZE || nextStep.y >= GAMEGRIDYSIZE) { // Out of bounds
     fatalCollision = true;
   } else if (nextStepContent == SNEK) {  // Self collision
     fatalCollision = true;
@@ -369,14 +364,14 @@ string ncursnek::getUserName(WINDOW *namewin)
   while (ch != '\n') {
     if (ch == '\b' || ch == 127) {
       if (!input.empty()) {
-		input.pop_back();
-	    mvwprintw(namewin, 1, i - 1, " ");
-	    wmove(namewin, 1, i - 1);
+        input.pop_back();
+        mvwprintw(namewin, 1, i - 1, " ");
+        wmove(namewin, 1, i - 1);
         i--;
-	  }
+      }
     } else {
       mvwaddch(namewin, 1, i, ch);
-	  i++;
+      i++;
       input.push_back(ch);
     }
     ch = wgetch(namewin);
