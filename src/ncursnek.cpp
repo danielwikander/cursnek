@@ -480,7 +480,7 @@ bool showPlayAgainWindow()
   bool playAgain = false;
   char c = wgetch(gameoverwin);
   if(c == 'r') 
-	  playAgain = true;
+    playAgain = true;
 
   return playAgain;
 }
