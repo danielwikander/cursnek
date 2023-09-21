@@ -1,5 +1,5 @@
 _dummy := $(shell mkdir -p bin)
 
-snekplusplus: ./src/ncursnek.cpp 
-	g++ -g -std=c++11 -o ./bin/ncursnek ./src/ncursnek.cpp -lncurses -Wall -Wextra
+snekplusplus: ./src/cursnek.cpp 
+	g++ -g -std=c++11 -o ./bin/cursnek ./src/cursnek.cpp -lncurses -Wall -Wextra
 

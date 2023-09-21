@@ -18,10 +18,10 @@
 
 using namespace std;
 
-class ncursnek 
+class cursnek 
 {
 public:
-  ncursnek();
+  cursnek();
   void setUpCurses();
   Direction setUpStartWindow();
   void setUpSnek(int, int, mapcontent [][20], deque<Coordinate> &);

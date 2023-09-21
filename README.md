@@ -1,15 +1,15 @@
-# ncursnek :snake:
+# cursnek :snake:
 
 Snake in your terminal!
 
-ncursnek is written in C++ using the ncurses library.
+cursnek is written in C++ using the ncurses library.
 
-![ncursnek](/screenshots/ncursnek2.gif?raw=true "ncursnek")<Paste>
+![cursnek](/screenshots/cursnek2.gif?raw=true "cursnek")<Paste>
 
 #### Installation:
 ```
-git clone https://github.com/danielwikander/ncursnek/
-cd ncursnek
+git clone https://github.com/danielwikander/cursnek/
+cd cursnek
 make
-./bin/ncursnek
+./bin/cursnek
 ```
